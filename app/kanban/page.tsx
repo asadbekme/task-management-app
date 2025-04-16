@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/header";
 import { KanbanBoard } from "@/components/kanban-board";
+import { StorageIndicator } from "@/components/storage-indicator";
 import { useTasks } from "@/hooks/use-tasks";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -60,6 +61,7 @@ export default function KanbanPage() {
             </button>
           </div>
         </div>
+        <StorageIndicator />
       </div>
     );
   }
@@ -76,6 +78,7 @@ export default function KanbanPage() {
           onUpdateTaskStatus={updateTaskStatus}
         />
       </main>
+      <StorageIndicator />
     </div>
   );
 }

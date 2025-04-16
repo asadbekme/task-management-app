@@ -1,7 +1,8 @@
 import type { Task } from "@/types";
 
-// JSON Storage API key - we'll use a more robust approach
-const API_KEY = process.env.NEXT_PUBLIC_JSONSTORAGE_API_KEY || "default-key";
+// Access environment variables
+const API_KEY = process.env.NEXT_PUBLIC_JSONSTORAGE_API_KEY || "";
+const USE_API = process.env.NEXT_PUBLIC_USE_API === "true";
 const API_URL = "https://api.jsonstorage.net/v1/json";
 
 // Helper to generate a unique ID
@@ -72,54 +73,54 @@ export const fetchTasks = async (): Promise<Task[]> => {
     return [];
   }
 
+  // Get local tasks first (as fallback)
+  const localTasks = getLocalTasks();
+
+  // If API usage is disabled or we don't have an API key, just use local storage
+  if (!USE_API || !API_KEY) {
+    console.info(
+      "API usage is disabled or no API key provided. Using local storage only."
+    );
+    return localTasks;
+  }
+
   try {
-    // Try to get from local storage first
-    const localTasks = getLocalTasks();
+    // Try to fetch from the API
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-    // Only try the API if we have a valid API key
-    if (API_KEY && API_KEY !== "default-key") {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const response = await fetch(`${API_URL}/${API_KEY}`, {
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-        const response = await fetch(`${API_URL}/${API_KEY}`, {
-          signal: controller.signal,
-          headers: {
-            Accept: "application/json",
-          },
-        });
+    clearTimeout(timeoutId);
 
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error(`API responded with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const apiTasks = data.tasks || [];
-
-        // If we got tasks from the API, save them locally and return them
-        if (apiTasks.length > 0) {
-          saveLocalTasks(apiTasks);
-          return apiTasks;
-        }
-
-        // If API returned empty array but we have local tasks, push local to API
-        if (localTasks.length > 0) {
-          await saveTasks(localTasks);
-        }
-      } catch (apiError) {
-        console.warn("API fetch failed, using local data:", apiError);
-        // Continue with local data on API failure
-      }
+    if (!response.ok) {
+      throw new Error(`API responded with status: ${response.status}`);
     }
 
-    // Return local tasks if API failed or wasn't attempted
+    const data = await response.json();
+    const apiTasks = data.tasks || [];
+
+    // If we got tasks from the API, save them locally and return them
+    if (apiTasks.length > 0) {
+      saveLocalTasks(apiTasks);
+      return apiTasks;
+    }
+
+    // If API returned empty array but we have local tasks, push local to API
+    if (localTasks.length > 0) {
+      await saveTasks(localTasks);
+    }
+
     return localTasks;
   } catch (error) {
-    console.error("Error in fetchTasks:", error);
-    // Last resort fallback
-    return initialTasks;
+    console.warn("API fetch failed, using local data:", error);
+    // Return local tasks if API failed
+    return localTasks;
   }
 };
 
@@ -128,8 +129,8 @@ export const saveTasks = async (tasks: Task[]): Promise<void> => {
   // Always save to local storage first
   saveLocalTasks(tasks);
 
-  // Skip API call if we're not in a browser or don't have a valid API key
-  if (typeof window === "undefined" || !API_KEY || API_KEY === "default-key") {
+  // Skip API call if we're not in a browser, API is disabled, or no API key
+  if (typeof window === "undefined" || !USE_API || !API_KEY) {
     return;
   }
 

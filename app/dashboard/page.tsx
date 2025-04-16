@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/header";
 import { ListView } from "@/components/list-view";
+import { StorageIndicator } from "@/components/storage-indicator";
 import { useTasks } from "@/hooks/use-tasks";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -61,6 +62,7 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+        <StorageIndicator />
       </div>
     );
   }
@@ -77,6 +79,7 @@ export default function DashboardPage() {
           onDeleteTask={removeTask}
         />
       </main>
+      <StorageIndicator />
     </div>
   );
 }
