@@ -1,7 +1,6 @@
 import type { User, AuthState } from "@/types";
 import { serialize, parse } from "cookie";
 
-// Cookies bilan ishlash uchun yordamchi funksiyalar
 export const setCookie = (name: string, value: string, options: any = {}) => {
   if (typeof window === "undefined") return;
 
@@ -32,7 +31,6 @@ export const removeCookie = (name: string) => {
 export const login = (username: string): AuthState => {
   // In a real app, this would validate against a backend service
   // and return a JWT or session token.
-
   const isAdmin = username.toLowerCase() === "otabek";
 
   const user: User = {

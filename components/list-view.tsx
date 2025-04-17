@@ -5,6 +5,7 @@ import type { Task } from "@/types";
 import { TaskCard } from "./task-card";
 import { TaskForm } from "./task-form";
 import { Plus, CheckCircle, Circle } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ListViewProps {
   activeTasks: Task[];
@@ -24,6 +25,8 @@ export const ListView = ({
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [showCompleted, setShowCompleted] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
@@ -51,13 +54,15 @@ export const ListView = ({
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Task List</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
-        >
-          <Plus size={18} className="mr-1" />
-          Add Task
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
+          >
+            <Plus size={18} className="mr-1" />
+            Add Task
+          </button>
+        )}
       </div>
 
       {showForm && (

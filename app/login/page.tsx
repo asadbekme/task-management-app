@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     login(username);
     router.push("/dashboard");
-    console.log("User logged in:", username);
+    // console.log("User logged in:", username);
   };
 
   return (

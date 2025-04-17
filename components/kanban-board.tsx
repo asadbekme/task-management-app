@@ -12,6 +12,7 @@ import { TaskCard } from "./task-card";
 import { TaskForm } from "./task-form";
 import { Plus } from "lucide-react";
 import html2canvas from "html2canvas";
+import { useAuth } from "@/hooks/use-auth";
 
 interface KanbanBoardProps {
   tasks: Task[];
@@ -31,6 +32,8 @@ export const KanbanBoard = ({
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [formStatus, setFormStatus] = useState<TaskStatus>("backlog");
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const columns: { id: TaskStatus; title: string }[] = [
     { id: "backlog", title: "Backlog" },
@@ -145,13 +148,15 @@ export const KanbanBoard = ({
                 </span>
               </div>
 
-              <button
-                onClick={() => handleAddTask(column.id)}
-                className="w-full py-2 mb-3 bg-white border border-dashed border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 flex items-center justify-center"
-              >
-                <Plus size={16} className="mr-1" />
-                Add Task
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => handleAddTask(column.id)}
+                  className="w-full py-2 mb-3 bg-white border border-dashed border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 flex items-center justify-center"
+                >
+                  <Plus size={16} className="mr-1" />
+                  Add Task
+                </button>
+              )}
 
               <Droppable droppableId={column.id}>
                 {(provided) => (

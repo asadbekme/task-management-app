@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 interface TaskCardProps {
   task: Task;
@@ -27,6 +28,8 @@ export const TaskCard = ({
   isDraggable = false,
 }: TaskCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const getTypeColor = (type: Task["type"]) => {
     switch (type) {
@@ -100,22 +103,24 @@ export const TaskCard = ({
             </span>
           </div>
         </div>
-        <div className="flex space-x-1">
-          <button
-            onClick={() => onEdit(task)}
-            className="text-gray-500 hover:text-gray-700"
-            aria-label="Edit task"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => onDelete(task.id)}
-            className="text-gray-500 hover:text-red-600"
-            aria-label="Delete task"
-          >
-            <Trash size={16} />
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="flex space-x-1">
+            <button
+              onClick={() => onEdit(task)}
+              className="text-gray-500 hover:text-gray-700"
+              aria-label="Edit task"
+            >
+              <Edit size={16} />
+            </button>
+            <button
+              onClick={() => onDelete(task.id)}
+              className="text-gray-500 hover:text-red-600"
+              aria-label="Delete task"
+            >
+              <Trash size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
       {task.description && (
