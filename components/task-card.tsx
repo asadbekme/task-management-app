@@ -11,6 +11,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
 
 interface TaskCardProps {
   task: Task;
@@ -79,9 +80,10 @@ export const TaskCard = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow p-4 mb-3 ${
-        isDraggable ? "cursor-grab active:cursor-grabbing" : ""
-      }`}
+      className={cn(
+        "bg-white rounded-lg shadow p-4 mb-3",
+        isDraggable && "cursor-grab active:cursor-grabbing"
+      )}
     >
       <div className="flex justify-between items-start mb-2">
         <div>
@@ -107,7 +109,7 @@ export const TaskCard = ({
           <div className="flex space-x-1">
             <button
               onClick={() => onEdit(task)}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-blue-600"
               aria-label="Edit task"
             >
               <Edit size={16} />

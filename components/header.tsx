@@ -55,7 +55,8 @@ export const Header = () => {
                   className="flex items-center text-gray-700 hover:text-red-600"
                   aria-label="Logout"
                 >
-                  <LogOut size={18} />
+                  <LogOut size={18} className="mr-2" />
+                  Logout
                 </button>
               </>
             )}
