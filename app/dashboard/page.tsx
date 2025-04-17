@@ -7,6 +7,8 @@ import { ListView } from "@/components/list-view";
 import { StorageIndicator } from "@/components/storage-indicator";
 import { useTasks } from "@/hooks/use-tasks";
 import { useAuth } from "@/hooks/use-auth";
+import Loader from "@/components/loader";
+import RetryComponent from "@/components/retry";
 
 export default function DashboardPage() {
   const { isAuthenticated } = useAuth();
@@ -34,37 +36,11 @@ export default function DashboardPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading tasks...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-            <p className="text-amber-600 mb-4">{error}</p>
-            <p className="mb-4">
-              You can still use the app with local data, or try again later.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-        <StorageIndicator />
-      </div>
-    );
+    return <RetryComponent error={error} />;
   }
 
   return (

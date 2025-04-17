@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Initialize auth state from localStorage
+    // Initialize the auth state from cookies
     const initialState = getAuthState();
     setAuthState(initialState);
   }, []);

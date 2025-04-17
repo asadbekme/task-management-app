@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
   // Check if user is authenticated by looking for the user item in localStorage
   // Note: This is a simplified approach. In a real app, you'd use cookies or JWT tokens
   const user = request.cookies.get("user");
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!user?.value;
 
   // Protected routes
   const protectedRoutes = ["/dashboard", "/kanban"];

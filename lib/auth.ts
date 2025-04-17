@@ -1,8 +1,38 @@
 import type { User, AuthState } from "@/types";
+import { serialize, parse } from "cookie";
+
+// Cookies bilan ishlash uchun yordamchi funksiyalar
+export const setCookie = (name: string, value: string, options: any = {}) => {
+  if (typeof window === "undefined") return;
+
+  document.cookie = serialize(name, value, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7, // 1 hafta
+    ...options,
+  });
+};
+
+export const getCookie = (name: string) => {
+  if (typeof window === "undefined") return null;
+
+  const cookies = parse(document.cookie);
+  return cookies[name] || null;
+};
+
+export const removeCookie = (name: string) => {
+  if (typeof window === "undefined") return;
+
+  document.cookie = serialize(name, "", {
+    path: "/",
+    maxAge: -1,
+  });
+};
 
 // Simple authentication service
 export const login = (username: string): AuthState => {
-  // In a real app, this would validate against a backend
+  // In a real app, this would validate against a backend service
+  // and return a JWT or session token.
+
   const isAdmin = username.toLowerCase() === "otabek";
 
   const user: User = {
@@ -11,8 +41,8 @@ export const login = (username: string): AuthState => {
     role: isAdmin ? "admin" : "user",
   };
 
-  // Store in localStorage for persistence
-  localStorage.setItem("user", JSON.stringify(user));
+  // Save user data to cookie
+  setCookie("user", JSON.stringify(user));
 
   return {
     user,
@@ -21,7 +51,8 @@ export const login = (username: string): AuthState => {
 };
 
 export const logout = (): AuthState => {
-  localStorage.removeItem("user");
+  // Remove user data from cookie
+  removeCookie("user");
 
   return {
     user: null,
@@ -30,11 +61,7 @@ export const logout = (): AuthState => {
 };
 
 export const getAuthState = (): AuthState => {
-  if (typeof window === "undefined") {
-    return { user: null, isAuthenticated: false };
-  }
-
-  const storedUser = localStorage.getItem("user");
+  const storedUser = getCookie("user");
 
   if (!storedUser) {
     return { user: null, isAuthenticated: false };

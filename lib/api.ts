@@ -3,7 +3,8 @@ import type { Task } from "@/types";
 // Access environment variables
 const API_KEY = process.env.NEXT_PUBLIC_JSONSTORAGE_API_KEY || "";
 const USE_API = process.env.NEXT_PUBLIC_USE_API === "true";
-const API_URL = "https://api.jsonstorage.net/v1/json";
+const API_URL =
+  "https://api.jsonstorage.net/v1/json/5eb3433d-d822-4943-ba3f-8f87832cb533/97ba58e0-6bf9-40c3-87d8-32169110d74e";
 
 // Helper to generate a unique ID
 export const generateId = (): string => {
@@ -86,24 +87,25 @@ export const fetchTasks = async (): Promise<Task[]> => {
 
   try {
     // Try to fetch from the API
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    // const controller = new AbortController();
+    // const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-    const response = await fetch(`${API_URL}/${API_KEY}`, {
-      signal: controller.signal,
+    const response = await fetch(`${API_URL}`, {
+      // signal: controller.signal,
       headers: {
         Accept: "application/json",
       },
     });
 
-    clearTimeout(timeoutId);
+    // clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`API responded with status: ${response.status}`);
     }
 
     const data = await response.json();
-    const apiTasks = data.tasks || [];
+    console.log(data);
+    const apiTasks = data || [];
 
     // If we got tasks from the API, save them locally and return them
     if (apiTasks.length > 0) {
