@@ -25,19 +25,7 @@ export const useTasks = () => {
         setError(null);
       } catch (err) {
         console.error("Error loading tasks:", err);
-        setError("Failed to load tasks. Using local data instead.");
-
-        // Try to get tasks from localStorage as a fallback
-        try {
-          if (typeof window !== "undefined") {
-            const localData = localStorage.getItem("tasks");
-            if (localData) {
-              setTasks(JSON.parse(localData));
-            }
-          }
-        } catch (localErr) {
-          console.error("Error loading from localStorage:", localErr);
-        }
+        setError("Failed to load tasks.");
       } finally {
         setLoading(false);
       }
