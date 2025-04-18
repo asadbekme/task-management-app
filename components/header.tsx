@@ -76,8 +76,8 @@ export const Header = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="md:hidden container mx-auto px-4">
+          <div className="space-y-1">
             {navItems.map((item) => (
               <Link
                 key={item.path}

@@ -28,7 +28,7 @@ export const fetchTasks = async (): Promise<Task[]> => {
 
   try {
     const rawData = await response.text();
-    console.log("Raw JSON response:", rawData);
+    // console.log("Raw JSON response:", rawData);
 
     const data = JSON.parse(rawData);
     console.log("Parsed data:", data);
