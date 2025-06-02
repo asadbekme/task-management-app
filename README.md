@@ -15,13 +15,14 @@ A modern task management app built with **Next.js**, **TypeScript**, and **Tailw
   - `lucide-react` – Icons
 - **Storage**:
   - [jsonstorage.net](https://jsonstorage.net) – Task data
-  - LocalStorage – Session management
+  - Cookies – Session management
 
 ---
 
 ## ✨ Core Features
 
 ### ✅ Task Management
+
 - Create, edit, and delete tasks
 - Each task includes:
   - `title`
@@ -32,16 +33,19 @@ A modern task management app built with **Next.js**, **TypeScript**, and **Tailw
   - `subtasks` support
 
 ### 🧭 Views
+
 - **List View**: Filter tasks by active/completed
 - **Kanban Board**: Drag-and-drop tasks between columns
 
 ### 👤 User System
+
 - Simple login system
 - Admin access:
-  - **Username**: `otabek`
+  - **Username**: `asadbek`
   - Can create/edit/delete tasks
 
 ### 💾 Data Handling
+
 - All task data is stored on [jsonstorage.net](https://jsonstorage.net)
 - User session stored in LocalStorage
 - Automatic cleanup of outdated tasks (e.g., old completed tasks)
@@ -84,3 +88,4 @@ npm install
 
 # Run the dev server
 npm run dev
+```

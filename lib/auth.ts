@@ -31,7 +31,7 @@ export const removeCookie = (name: string) => {
 export const login = (username: string): AuthState => {
   // In a real app, this would validate against a backend service
   // and return a JWT or session token.
-  const isAdmin = username.toLowerCase() === "otabek";
+  const isAdmin = username.toLowerCase() === "asadbek";
 
   const user: User = {
     id: "1",

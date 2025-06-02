@@ -65,7 +65,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-sm text-center text-gray-600">
-            <p>Use "otabek" to sign in as admin</p>
+            <p>Use "asadbek" to sign in as admin</p>
           </div>
         </form>
       </div>
