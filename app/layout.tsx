@@ -9,6 +9,20 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Task Management App",
   description: "A simple task management application",
+  keywords: [
+    "task",
+    "management",
+    "app",
+    "task-manager",
+    "task-manager-app",
+    "task-management",
+    "task-management-app",
+  ],
+  icons: {
+    icon: "/favicon.webp",
+    shortcut: "/favicon.webp",
+    apple: "/favicon.webp",
+  },
 };
 
 export default function RootLayout({
