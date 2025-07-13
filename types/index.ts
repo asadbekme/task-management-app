@@ -2,6 +2,17 @@ export type TaskStatus = "backlog" | "inprogress" | "ready-to-check" | "done";
 export type TaskType = "feature" | "bug" | "task" | "improvement";
 export type UserRole = "user" | "admin";
 
+export interface User {
+  id: string;
+  username: string;
+  role: UserRole;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+}
+
 export interface SubTask {
   id: string;
   title: string;
@@ -18,15 +29,4 @@ export interface Task {
   createdAt: string;
   updatedAt: string;
   subtasks: SubTask[];
-}
-
-export interface User {
-  id: string;
-  username: string;
-  role: UserRole;
-}
-
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
 }

@@ -6,7 +6,7 @@ export const setCookie = (name: string, value: string, options: any = {}) => {
 
   document.cookie = serialize(name, value, {
     path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 1 hafta
+    maxAge: 60 * 60 * 24 * 7, // 1 week
     ...options,
   });
 };
@@ -34,7 +34,7 @@ export const login = (username: string): AuthState => {
   const isAdmin = username.toLowerCase() === "asadbek";
 
   const user: User = {
-    id: "1",
+    id: isAdmin ? "1" : "2",
     username,
     role: isAdmin ? "admin" : "user",
   };
