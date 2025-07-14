@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,6 +21,7 @@ export default function LoginPage() {
     }
 
     login(username);
+    toast.success("Login successful");
     router.push("/dashboard");
   };
 
@@ -53,7 +55,7 @@ export default function LoginPage() {
 
           {error && <span className="text-red-500 text-sm">{error}</span>}
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" aria-label="Sign in">
             Sign in
           </Button>
 
