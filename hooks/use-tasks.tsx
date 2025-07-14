@@ -9,6 +9,7 @@ import {
   deleteTask,
   generateId,
 } from "@/lib/api";
+import { toast } from "sonner";
 
 export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -49,6 +50,7 @@ export const useTasks = () => {
 
       const updatedTasks = await addTask(tasks, newTask);
       setTasks(updatedTasks);
+      toast.success("Task created successfully");
       return newTask;
     } catch (err) {
       setError("Failed to create task");
@@ -74,6 +76,7 @@ export const useTasks = () => {
 
       const updatedTasks = await updateTask(tasks, updatedTask);
       setTasks(updatedTasks);
+      toast.success("Task updated successfully");
       return updatedTask;
     } catch (err) {
       setError("Failed to update task");
@@ -87,6 +90,7 @@ export const useTasks = () => {
     try {
       const updatedTasks = await deleteTask(tasks, taskId);
       setTasks(updatedTasks);
+      toast.success("Task deleted successfully");
     } catch (err) {
       setError("Failed to delete task");
       console.error(err);

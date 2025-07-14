@@ -1,13 +1,13 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import type { Task, TaskType, TaskStatus, SubTask } from "@/types";
 import { X, Plus } from "lucide-react";
 import { generateId } from "@/lib/api";
+import { Button } from "./ui/button";
 
-interface TaskFormProps {
+export interface TaskFormProps {
   initialTask?: Partial<Task>;
   onSubmit: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => void;
   onCancel: () => void;
@@ -79,7 +79,7 @@ export const TaskForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6">
+    <form onSubmit={handleSubmit} className="p-2">
       <h2 className="text-xl font-semibold mb-4">
         {initialTask?.id ? "Edit Task" : "Create New Task"}
       </h2>
@@ -227,19 +227,13 @@ export const TaskForm = ({
       </div>
 
       <div className="flex justify-end space-x-3 mt-6">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-        >
+        <Button onClick={onCancel} aria-label="Cancel" variant="secondary">
           Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
+        </Button>
+
+        <Button type="submit" aria-label="Save Task">
           {initialTask?.id ? "Update Task" : "Create Task"}
-        </button>
+        </Button>
       </div>
     </form>
   );

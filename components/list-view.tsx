@@ -3,9 +3,11 @@
 import { useState } from "react";
 import type { Task } from "@/types";
 import { TaskCard } from "./task-card";
-import { TaskForm } from "./task-form";
+// import { TaskForm } from "./task-form";
 import { Plus, CheckCircle, Circle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { Button } from "./ui/button";
+import TaskModal from "./task-modal";
 
 interface ListViewProps {
   activeTasks: Task[];
@@ -55,24 +57,20 @@ export const ListView = ({
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Task List</h1>
         {isAdmin && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
-          >
-            <Plus size={18} className="mr-1" />
+          <Button onClick={() => setShowForm(true)}>
+            <Plus size={18} />
             Add Task
-          </button>
+          </Button>
         )}
       </div>
 
       {showForm && (
-        <div className="mb-6">
-          <TaskForm
-            initialTask={editingTask || undefined}
-            onSubmit={handleUpdateTask}
-            onCancel={handleCancelForm}
-          />
-        </div>
+        <TaskModal
+          isOpen={showForm}
+          initialTask={editingTask || undefined}
+          onSubmit={handleUpdateTask}
+          onCancel={handleCancelForm}
+        />
       )}
 
       <div className="mb-6">
