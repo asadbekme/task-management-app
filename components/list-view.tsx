@@ -57,8 +57,8 @@ export const ListView = ({
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Task List</h1>
         {isAdmin && (
-          <Button onClick={() => setShowForm(true)}>
-            <Plus size={18} />
+          <Button onClick={() => setShowForm(true)} aria-label="Add Task">
+            <Plus size={16} />
             Add Task
           </Button>
         )}
@@ -106,9 +106,9 @@ export const ListView = ({
               Completed Tasks ({completedTasks.length})
             </h2>
             {showCompleted ? (
-              <CheckCircle size={20} className="text-green-500" />
+              <CheckCircle size={16} className="text-green-500" />
             ) : (
-              <Circle size={20} />
+              <Circle size={16} />
             )}
           </button>
         </div>

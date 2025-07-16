@@ -9,10 +9,12 @@ import {
 } from "@hello-pangea/dnd";
 import type { Task, TaskStatus } from "@/types";
 import { TaskCard } from "./task-card";
-import { TaskForm } from "./task-form";
-import { Plus } from "lucide-react";
+// import { TaskForm } from "./task-form";
+import { Download, Plus } from "lucide-react";
 import html2canvas from "html2canvas";
 import { useAuth } from "@/hooks/use-auth";
+import { Button } from "./ui/button";
+import TaskModal from "./task-modal";
 
 interface KanbanBoardProps {
   tasks: Task[];
@@ -116,22 +118,19 @@ export const KanbanBoard = ({
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Kanban Board</h1>
-        <button
-          onClick={exportAsImage}
-          className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-        >
+        <Button onClick={exportAsImage} aria-label="Export as Image">
+          <Download size={16} />
           Export as Image
-        </button>
+        </Button>
       </div>
 
       {showForm && (
-        <div className="mb-6">
-          <TaskForm
-            initialTask={editingTask || { status: formStatus }}
-            onSubmit={handleUpdateTask}
-            onCancel={handleCancelForm}
-          />
-        </div>
+        <TaskModal
+          isOpen={showForm}
+          initialTask={editingTask || { status: formStatus }}
+          onSubmit={handleUpdateTask}
+          onCancel={handleCancelForm}
+        />
       )}
 
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -149,13 +148,15 @@ export const KanbanBoard = ({
               </div>
 
               {isAdmin && (
-                <button
+                <Button
                   onClick={() => handleAddTask(column.id)}
-                  className="w-full py-2 mb-3 bg-white border border-dashed border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 flex items-center justify-center"
+                  className="mb-4 w-full border-dashed"
+                  variant="outline"
+                  aria-label="Add Task"
                 >
                   <Plus size={16} className="mr-1" />
                   Add Task
-                </button>
+                </Button>
               )}
 
               <Droppable droppableId={column.id}>

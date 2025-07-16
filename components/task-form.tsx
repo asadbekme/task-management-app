@@ -79,11 +79,7 @@ export const TaskForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-2">
-      <h2 className="text-xl font-semibold mb-4">
-        {initialTask?.id ? "Edit Task" : "Create New Task"}
-      </h2>
-
+    <form onSubmit={handleSubmit}>
       <div className="mb-4">
         <label
           htmlFor="title"

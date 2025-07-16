@@ -20,9 +20,11 @@ function TaskModal({
   return (
     <Dialog open={isOpen} onOpenChange={handleCancelForm}>
       <DialogTrigger>Open</DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="hidden">
-          <DialogTitle>Task Modal</DialogTitle>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {editingTask?.id ? "Edit Task" : "Create New Task"}
+          </DialogTitle>
         </DialogHeader>
         <TaskForm
           initialTask={editingTask || undefined}

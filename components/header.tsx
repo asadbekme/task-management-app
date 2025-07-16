@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import MobileMenu from "./mobile-menu";
+import { Button } from "./ui/button";
 
 export const Header = () => {
   const { user, logout } = useAuth();
@@ -60,18 +61,20 @@ export const Header = () => {
               className="flex items-center text-gray-700 hover:text-red-600"
               aria-label="Logout"
             >
-              <LogOut size={18} className="mr-2" />
+              <LogOut size={16} className="mr-2" />
               Logout
             </button>
           </div>
 
-          <button
+          <Button
             onClick={toggleMobileMenu}
-            className="text-gray-700 md:hidden"
+            size="sm"
+            variant="ghost"
+            className="md:hidden"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+            {isMobileMenuOpen ? <X size={16} /> : <Menu size={16} />}
+          </Button>
         </div>
       </div>
 

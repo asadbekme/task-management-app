@@ -106,7 +106,7 @@ export const TaskCard = ({
           </div>
         </div>
         {isAdmin && (
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
             <button
               onClick={() => onEdit(task)}
               className="text-gray-500 hover:text-blue-600"
