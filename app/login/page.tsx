@@ -5,6 +5,16 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { LogIn } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -26,44 +36,46 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Task Management App
-          </h1>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to access your tasks
-          </p>
-        </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <label htmlFor="username" className="sr-only">
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-3 sm:px-6 lg:px-8">
+      <Card className="max-w-md w-full">
+        <CardHeader className="justify-center items-center">
+          <LogIn className="size-8 text-blue-600" />
+          <CardTitle className="text-2xl">
+            <h1>Task Manager</h1>
+          </CardTitle>
+          <CardDescription className="text-gray-600">
+            <p>Sign in to manage your tasks</p>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-1">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                name="username"
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+                required
+              />
+            </div>
 
-          {error && <span className="text-red-500 text-sm">{error}</span>}
+            {error && <span className="text-red-500 text-sm">{error}</span>}
 
-          <Button type="submit" className="w-full" aria-label="Sign in">
-            Sign in
-          </Button>
+            <Button type="submit" className="w-full" aria-label="Sign in">
+              Sign in
+            </Button>
 
-          <p className="text-sm text-center text-gray-600">
-            Use "asadbek" to sign in as admin
-          </p>
-        </form>
-      </div>
-    </div>
+            <div className="p-3 bg-blue-50 rounded-lg text-sm">
+              <p className="font-medium">Demo credentials:</p>
+              <p>Admin: username "asadbek"</p>
+              <p>User: any username except "asadbek"</p>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </main>
   );
 }
