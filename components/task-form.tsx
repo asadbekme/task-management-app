@@ -6,6 +6,17 @@ import type { Task, TaskType, TaskStatus, SubTask } from "@/types";
 import { X, Plus } from "lucide-react";
 import { generateId } from "@/lib/api";
 import { Button } from "./ui/button";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Input } from "./ui/input";
+import { cn } from "@/lib/utils";
 
 export interface TaskFormProps {
   initialTask?: Partial<Task>;
@@ -81,20 +92,15 @@ export const TaskForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <Label htmlFor="title" className="mb-1">
           Title*
-        </label>
-        <input
+        </Label>
+        <Input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`w-full px-3 py-2 border rounded-md ${
-            errors.title ? "border-red-500" : "border-gray-300"
-          } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          className={errors.title && "border-red-500"}
         />
         {errors.title && (
           <p className="mt-1 text-sm text-red-500">{errors.title}</p>
@@ -102,93 +108,83 @@ export const TaskForm = ({
       </div>
 
       <div className="mb-4">
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <Label htmlFor="description" className="mb-1">
           Description
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        ></Textarea>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label
-            htmlFor="type"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <Label htmlFor="type" className="mb-1">
             Type
-          </label>
-          <select
-            id="type"
+          </Label>
+          <Select
             value={type}
-            onChange={(e) => setType(e.target.value as TaskType)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onValueChange={(task: TaskType) => setType(task)}
           >
-            <option value="task">Task</option>
-            <option value="bug">Bug</option>
-            <option value="feature">Feature</option>
-            <option value="improvement">Improvement</option>
-          </select>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="task">Task</SelectItem>
+              <SelectItem value="feature">Feature</SelectItem>
+              <SelectItem value="bug">Bug</SelectItem>
+              <SelectItem value="impovement">Improvement</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
-          <label
-            htmlFor="status"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <Label htmlFor="status" className="mb-1">
             Status
-          </label>
-          <select
-            id="status"
+          </Label>
+          <Select
             value={status}
-            onChange={(e) => setStatus(e.target.value as TaskStatus)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onValueChange={(status: TaskStatus) => setStatus(status)}
           >
-            <option value="backlog">Backlog</option>
-            <option value="inprogress">In Progress</option>
-            <option value="ready-to-check">Ready to Check</option>
-            <option value="done">Done</option>
-          </select>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="backlog">Backlog</SelectItem>
+              <SelectItem value="inprogress">In Progress</SelectItem>
+              <SelectItem value="ready-to-check">Ready to Check</SelectItem>
+              <SelectItem value="done">Done</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div className="mb-4">
-        <label
-          htmlFor="assignee"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <Label htmlFor="assignee" className="mb-1">
           Assignee
-        </label>
-        <input
+        </Label>
+        <Input
           id="assignee"
           type="text"
           value={assignee}
           onChange={(e) => setAssignee(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Enter assignee name"
         />
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Subtasks
-        </label>
+        <Label className="mb-1">Subtasks</Label>
 
-        <div className="space-y-2 mb-3">
+        <div className={cn("space-y-2", subtasks.length > 0 && "my-2")}>
           {subtasks.map((subtask) => (
-            <div key={subtask.id} className="flex items-center">
+            <div key={subtask.id} className="flex items-center gap-2">
               <span className="flex-grow">{subtask.title}</span>
               <button
                 type="button"
                 onClick={() => removeSubtask(subtask.id)}
-                className="ml-2 text-gray-400 hover:text-red-500"
+                className="text-gray-400 hover:text-red-500"
                 aria-label="Remove subtask"
               >
                 <X size={16} />
@@ -197,12 +193,11 @@ export const TaskForm = ({
           ))}
         </div>
 
-        <div className="flex">
-          <input
+        <div className="flex items-center">
+          <Input
             type="text"
             value={newSubtask}
             onChange={(e) => setNewSubtask(e.target.value)}
-            className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Add a subtask"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -211,14 +206,15 @@ export const TaskForm = ({
               }
             }}
           />
-          <button
+          <Button
             type="button"
             onClick={addSubtask}
-            className="px-3 py-2 bg-gray-100 border border-gray-300 border-l-0 rounded-r-md hover:bg-gray-200"
-            aria-label="Add subtask"
+            aria-label="Add a subtask"
+            size="sm"
+            variant="secondary"
           >
             <Plus size={16} />
-          </button>
+          </Button>
         </div>
       </div>
 

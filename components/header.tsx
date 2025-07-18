@@ -29,11 +29,9 @@ export const Header = () => {
     <header className="bg-white shadow">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
-          <div className="flex items-center">
-            <Link href="/dashboard" className="text-xl font-bold text-blue-600">
-              Task Manager
-            </Link>
-          </div>
+          <Link href="/dashboard" className="text-xl font-bold text-blue-600">
+            Task Manager
+          </Link>
 
           <nav className="hidden md:flex space-x-4">
             {navItems.map((item) => (
@@ -53,9 +51,9 @@ export const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <span className="text-sm text-gray-700">
+            <p className="text-sm text-gray-700">
               {user?.username} {user?.role === "admin" && "(Admin)"}
-            </span>
+            </p>
             <button
               onClick={logout}
               className="flex items-center text-gray-700 hover:text-red-600"
