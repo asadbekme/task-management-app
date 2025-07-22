@@ -7,11 +7,11 @@ import {
   Draggable,
   type DropResult,
 } from "@hello-pangea/dnd";
-import type { Task, TaskStatus } from "@/types";
 import { TaskCard } from "./task-card";
-// import { TaskForm } from "./task-form";
-import { Download, Plus } from "lucide-react";
 import html2canvas from "html2canvas";
+import { Download, Plus } from "lucide-react";
+// import { TaskForm } from "./task-form";
+import type { Task, TaskStatus } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import TaskModal from "./task-modal";
@@ -31,7 +31,7 @@ export const KanbanBoard = ({
   onDeleteTask,
   onUpdateTaskStatus,
 }: KanbanBoardProps) => {
-  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [formStatus, setFormStatus] = useState<TaskStatus>("backlog");
   const { user } = useAuth();
@@ -66,7 +66,7 @@ export const KanbanBoard = ({
 
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
-    setShowForm(true);
+    setShowModal(true);
   };
 
   const handleUpdateTask = (
@@ -81,17 +81,17 @@ export const KanbanBoard = ({
         status: formStatus,
       });
     }
-    setShowForm(false);
+    setShowModal(false);
   };
 
   const handleCancelForm = () => {
-    setShowForm(false);
+    setShowModal(false);
     setEditingTask(null);
   };
 
   const handleAddTask = (status: TaskStatus) => {
     setFormStatus(status);
-    setShowForm(true);
+    setShowModal(true);
   };
 
   const exportAsImage = async () => {
@@ -124,9 +124,9 @@ export const KanbanBoard = ({
         </Button>
       </div>
 
-      {showForm && (
+      {showModal && (
         <TaskModal
-          isOpen={showForm}
+          isOpen={showModal}
           initialTask={editingTask || { status: formStatus }}
           onSubmit={handleUpdateTask}
           onCancel={handleCancelForm}
@@ -183,6 +183,7 @@ export const KanbanBoard = ({
                               onEdit={handleEditTask}
                               onDelete={onDeleteTask}
                               isDraggable={true}
+                              classNames="mb-4"
                             />
                           </div>
                         )}

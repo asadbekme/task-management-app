@@ -39,7 +39,7 @@ export default function KanbanPage() {
   }
 
   if (error) {
-    return <RetryComponent error={error} />;
+    return <RetryComponent error={error.message} />;
   }
 
   return (

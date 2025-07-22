@@ -20,6 +20,7 @@ interface TaskCardProps {
   onDelete: (taskId: string) => void;
   onStatusChange?: (taskId: string, status: Task["status"]) => void;
   isDraggable?: boolean;
+  classNames?: string;
 }
 
 export const TaskCard = ({
@@ -28,6 +29,7 @@ export const TaskCard = ({
   onDelete,
   onStatusChange,
   isDraggable = false,
+  classNames,
 }: TaskCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const { user } = useAuth();
@@ -82,8 +84,9 @@ export const TaskCard = ({
   return (
     <Card
       className={cn(
-        "bg-white rounded-lg shadow p-4 mb-4",
-        isDraggable && "cursor-grab active:cursor-grabbing"
+        "bg-white rounded-lg shadow p-4",
+        isDraggable && "cursor-grab active:cursor-grabbing",
+        classNames && classNames
       )}
     >
       <div className="flex justify-between items-start mb-2">

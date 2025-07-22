@@ -40,7 +40,7 @@ export default function DashboardPage() {
   }
 
   if (error) {
-    return <RetryComponent error={error} />;
+    return <RetryComponent error={error.message} />;
   }
 
   return (

@@ -1,4 +1,5 @@
 import type { Task } from "@/types";
+import axios from "axios";
 
 // Environment variables
 const API_KEY = process.env.NEXT_PUBLIC_JSONSTORAGE_API_KEY || "";
@@ -17,30 +18,16 @@ export const fetchTasks = async (): Promise<Task[]> => {
     throw new Error("API is disabled or missing API key");
   }
 
-  const response = await fetch(API_URL, {
+  const response = await axios.get(API_URL, {
     headers: { Accept: "application/json" },
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch tasks: ${response.status}`);
+  const data = response.data;
+
+  if (Array.isArray(data)) {
+    return data;
   }
-
-  try {
-    const rawData = await response.text();
-    // console.log("Raw JSON response:", rawData);
-
-    const data = JSON.parse(rawData);
-    console.log("Parsed data:", data);
-
-    if (Array.isArray(data)) {
-      return data;
-    }
-    return data.tasks || [];
-  } catch (error) {
-    console.error("JSON parsing error:", error);
-    return [];
-  }
+  return data.tasks || [];
 };
 
 // Save tasks to JSONStorage API
@@ -55,13 +42,15 @@ export const saveTasks = async (tasks: Task[]): Promise<void> => {
     return updated > thirtyDaysAgo;
   });
 
-  const response = await fetch(`${API_URL}?apiKey=${API_KEY}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cleanedTasks),
-  });
+  const response = await axios.put(
+    `${API_URL}?apiKey=${API_KEY}`,
+    cleanedTasks,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 
-  if (!response.ok) {
+  if (response.status !== 200) {
     throw new Error(`Failed to save tasks: ${response.status}`);
   }
 };

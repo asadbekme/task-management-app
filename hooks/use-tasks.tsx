@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import type { Task, TaskStatus } from "@/types";
 import {
   fetchTasks,
@@ -9,37 +8,27 @@ import {
   deleteTask,
   generateId,
 } from "@/lib/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useTasks = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  // Load tasks on component mount
-  useEffect(() => {
-    const loadTasks = async () => {
-      try {
-        setLoading(true);
-        const loadedTasks = await fetchTasks();
-        setTasks(loadedTasks);
-        setError(null);
-      } catch (err) {
-        console.error("Error loading tasks:", err);
-        setError("Failed to load tasks.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch tasks
+  const {
+    data: tasks = [],
+    isLoading: loading,
+    error,
+  } = useQuery<Task[], Error>({
+    queryKey: ["tasks"],
+    queryFn: fetchTasks,
+  });
 
-    loadTasks();
-  }, []);
-
-  // Create a new task
-  const createTask = async (
-    taskData: Omit<Task, "id" | "createdAt" | "updatedAt">
-  ) => {
-    try {
+  // Mutations
+  const addMutation = useMutation({
+    mutationFn: async (
+      taskData: Omit<Task, "id" | "createdAt" | "updatedAt">
+    ) => {
       const now = new Date().toISOString();
       const newTask: Task = {
         ...taskData,
@@ -47,68 +36,85 @@ export const useTasks = () => {
         createdAt: now,
         updatedAt: now,
       };
-
       const updatedTasks = await addTask(tasks, newTask);
-      setTasks(updatedTasks);
+      return updatedTasks;
+    },
+    onSuccess: (updatedTasks) => {
+      // queryClient.setQueryData(["tasks"], updatedTasks);
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("Task created successfully");
-      return newTask;
-    } catch (err) {
-      setError("Failed to create task");
-      console.error(err);
-      throw err;
-    }
-  };
+    },
+    onError: () => {
+      toast.error("Failed to create task");
+    },
+  });
 
-  // Update an existing task
-  const editTask = async (taskId: string, taskData: Partial<Task>) => {
-    try {
+  const updateMutation = useMutation({
+    mutationFn: async ({
+      taskId,
+      taskData,
+    }: {
+      taskId: string;
+      taskData: Partial<Task>;
+    }) => {
       const taskToUpdate = tasks.find((task) => task.id === taskId);
-
-      if (!taskToUpdate) {
-        throw new Error("Task not found");
-      }
+      if (!taskToUpdate) throw new Error("Task not found");
 
       const updatedTask: Task = {
         ...taskToUpdate,
         ...taskData,
         updatedAt: new Date().toISOString(),
       };
-
       const updatedTasks = await updateTask(tasks, updatedTask);
-      setTasks(updatedTasks);
+      return updatedTasks;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("Task updated successfully");
-      return updatedTask;
-    } catch (err) {
-      setError("Failed to update task");
-      console.error(err);
-      throw err;
-    }
-  };
+    },
+    onError: () => {
+      toast.error("Failed to update task");
+    },
+  });
 
-  // Remove a task
-  const removeTask = async (taskId: string) => {
-    try {
+  const deleteMutation = useMutation({
+    mutationFn: async (taskId: string) => {
       const updatedTasks = await deleteTask(tasks, taskId);
-      setTasks(updatedTasks);
+      return updatedTasks;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("Task deleted successfully");
-    } catch (err) {
-      setError("Failed to delete task");
-      console.error(err);
-      throw err;
-    }
+    },
+    onError: () => {
+      toast.error("Failed to delete task");
+    },
+  });
+
+  // API methods
+  const createTask = async (
+    taskData: Omit<Task, "id" | "createdAt" | "updatedAt">
+  ) => {
+    return addMutation.mutateAsync(taskData);
   };
 
-  // Update task status (for drag and drop)
+  const editTask = async (taskId: string, taskData: Partial<Task>) => {
+    return updateMutation.mutateAsync({ taskId, taskData });
+  };
+
+  const removeTask = async (taskId: string) => {
+    return deleteMutation.mutateAsync(taskId);
+  };
+
   const updateTaskStatus = async (taskId: string, newStatus: TaskStatus) => {
     return editTask(taskId, { status: newStatus });
   };
 
-  // Get tasks by status (for Kanban view)
+  // Memoized helpers
   const getTasksByStatus = (status: TaskStatus) => {
     return tasks.filter((task) => task.status === status);
   };
 
-  // Get active and completed tasks (for List view)
   const getActiveTasks = () => {
     return tasks.filter((task) => task.status !== "done");
   };

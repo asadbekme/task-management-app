@@ -94,11 +94,11 @@ export const ListView = ({
       )}
 
       {showActive && (
-        <div>
+        <>
           {activeTasks.length === 0 ? (
             <EmptyStateCard message="No active tasks. Create one to get started!" />
           ) : (
-            <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {activeTasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -107,17 +107,17 @@ export const ListView = ({
                   onDelete={onDeleteTask}
                 />
               ))}
-            </>
+            </div>
           )}
-        </div>
+        </>
       )}
 
       {showCompleted && (
-        <div>
+        <>
           {completedTasks.length === 0 ? (
             <EmptyStateCard message="No completed tasks yet." />
           ) : (
-            <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {completedTasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -126,9 +126,9 @@ export const ListView = ({
                   onDelete={onDeleteTask}
                 />
               ))}
-            </>
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
