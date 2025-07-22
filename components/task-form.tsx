@@ -2,8 +2,9 @@
 
 import type React from "react";
 import { useState } from "react";
-import type { Task, TaskType, TaskStatus, SubTask } from "@/types";
 import { X, Plus } from "lucide-react";
+import type { Task, TaskType, TaskStatus, SubTask } from "@/types";
+import { cn } from "@/lib/utils";
 import { generateId } from "@/lib/api";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -16,7 +17,6 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Input } from "./ui/input";
-import { cn } from "@/lib/utils";
 
 export interface TaskFormProps {
   initialTask?: Partial<Task>;
@@ -193,7 +193,7 @@ export const TaskForm = ({
           ))}
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-1">
           <Input
             type="text"
             value={newSubtask}

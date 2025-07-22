@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import type { Task } from "@/types";
 import {
   CheckCircle,
   Circle,
@@ -10,8 +9,10 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import type { Task } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+import { Card, CardDescription } from "./ui/card";
 
 interface TaskCardProps {
   task: Task;
@@ -79,9 +80,9 @@ export const TaskCard = ({
   const totalSubtasks = task.subtasks.length;
 
   return (
-    <div
+    <Card
       className={cn(
-        "bg-white rounded-lg shadow p-4 mb-3",
+        "bg-white rounded-lg shadow p-4 mb-4",
         isDraggable && "cursor-grab active:cursor-grabbing"
       )}
     >
@@ -125,9 +126,9 @@ export const TaskCard = ({
         )}
       </div>
 
-      {task.description && (
-        <p className="text-sm text-gray-600 mt-2 mb-3">{task.description}</p>
-      )}
+      <CardDescription className="mt-2 mb-3">
+        {task.description && <p>{task.description}</p>}
+      </CardDescription>
 
       <div className="flex justify-between items-center text-sm text-gray-500 mt-2">
         <span>Assignee: {task.assignee || "Unassigned"}</span>
@@ -178,6 +179,6 @@ export const TaskCard = ({
           </ul>
         </div>
       )}
-    </div>
+    </Card>
   );
 };

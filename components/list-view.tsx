@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 import type { Task } from "@/types";
 import { TaskCard } from "./task-card";
-// import { TaskForm } from "./task-form";
-import { Plus, CheckCircle, Circle } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import TaskModal from "./task-modal";
+import { EmptyStateCard } from "./empty-state-card";
 
 interface ListViewProps {
   activeTasks: Task[];
@@ -24,15 +24,17 @@ export const ListView = ({
   onUpdateTask,
   onDeleteTask,
 }: ListViewProps) => {
-  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [showCompleted, setShowCompleted] = useState(false);
+  const [view, setView] = useState<"active" | "completed">("active");
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
+  const showActive = view === "active";
+  const showCompleted = view === "completed";
 
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
-    setShowForm(true);
+    setShowModal(true);
   };
 
   const handleUpdateTask = (
@@ -44,88 +46,90 @@ export const ListView = ({
     } else {
       onCreateTask(taskData);
     }
-    setShowForm(false);
+    setShowModal(false);
   };
 
   const handleCancelForm = () => {
-    setShowForm(false);
+    setShowModal(false);
     setEditingTask(null);
   };
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Task List</h1>
-        {isAdmin && (
-          <Button onClick={() => setShowForm(true)} aria-label="Add Task">
-            <Plus size={16} />
-            Add Task
+      <div className="flex flex-col gap-5 md:flex-row md:justify-between md:items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">
+          {showActive ? "Active Tasks" : "Completed Tasks"}
+        </h1>
+        <div className="flex items-center flex-wrap gap-2">
+          <Button
+            variant={showActive ? "default" : "outline"}
+            aria-label="Active Tasks"
+            onClick={() => setView("active")}
+          >
+            Active Tasks
           </Button>
-        )}
+          <Button
+            variant={showCompleted ? "default" : "outline"}
+            aria-label="Completed Tasks"
+            onClick={() => setView("completed")}
+          >
+            Completed Tasks
+          </Button>
+          {isAdmin && (
+            <Button onClick={() => setShowModal(true)} aria-label="Add Task">
+              <Plus size={16} />
+              Add Task
+            </Button>
+          )}
+        </div>
       </div>
 
-      {showForm && (
+      {showModal && (
         <TaskModal
-          isOpen={showForm}
+          isOpen={showModal}
           initialTask={editingTask || undefined}
           onSubmit={handleUpdateTask}
           onCancel={handleCancelForm}
         />
       )}
 
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
-          Active Tasks ({activeTasks.length})
-        </h2>
-        {activeTasks.length === 0 ? (
-          <p className="text-gray-500">
-            No active tasks. Create one to get started!
-          </p>
-        ) : (
-          <div>
-            {activeTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={handleEditTask}
-                onDelete={onDeleteTask}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div>
-        <div className="flex items-center mb-4">
-          <button
-            onClick={() => setShowCompleted(!showCompleted)}
-            className="flex items-center text-gray-700 hover:text-gray-900"
-            aria-expanded={showCompleted}
-          >
-            <h2 className="text-xl font-semibold mr-2">
-              Completed Tasks ({completedTasks.length})
-            </h2>
-            {showCompleted ? (
-              <CheckCircle size={16} className="text-green-500" />
-            ) : (
-              <Circle size={16} />
-            )}
-          </button>
+      {showActive && (
+        <div>
+          {activeTasks.length === 0 ? (
+            <EmptyStateCard message="No active tasks. Create one to get started!" />
+          ) : (
+            <>
+              {activeTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onEdit={handleEditTask}
+                  onDelete={onDeleteTask}
+                />
+              ))}
+            </>
+          )}
         </div>
+      )}
 
-        {showCompleted && completedTasks.length > 0 && (
-          <div>
-            {completedTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={handleEditTask}
-                onDelete={onDeleteTask}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {showCompleted && (
+        <div>
+          {completedTasks.length === 0 ? (
+            <EmptyStateCard message="No completed tasks yet." />
+          ) : (
+            <>
+              {completedTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onEdit={handleEditTask}
+                  onDelete={onDeleteTask}
+                />
+              ))}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
